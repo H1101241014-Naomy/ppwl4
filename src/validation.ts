@@ -18,37 +18,5 @@ const app = new Elysia()
       })
     }
   )
-  .listen(3000);
-
-
+ .listen(3000);
 console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`);
-
-app.get(
-  "/user/:id",
-  ({ params }) => params,
-  {
-    params: t.Object({
-      id: t.Number()
-    })
-  }
-)
-
-
-app.get(
-  "/search",
-  ({ query }) => query,
-  {
-    query: t.Object({
-      keyword: t.String(),
-      page: t.Optional(t.Number())
-    })
-  }
-)
-
-app.get("/products/:id"
-   ,(context) => {context.params, context.query},
-   {
-    params:t.object ({
-      
-    })
-   }
