@@ -1,5 +1,6 @@
-import { Elysia } from "elysia"
+import { Elysia, t } from "elysia"
 import { openapi } from "@elysiajs/openapi";
+
 
 const app = new Elysia()
 .use(openapi())
@@ -9,14 +10,21 @@ app.onRequest(({ request }) => {
  console.log("🕒", new Date().toISOString())
 })
 
-app.onRequest(({ request, set }) => {
-  if (request.headers.get("x-block") === "true") {
-    set.status = 403
-    return { message: "Blocked" }
-  }
-})
 
 app.get("/", () => "Hello Middleware")
+app.get(
+  "/stats",
+  () => ({
+    total: 100,  
+    active: 50
+  }),
+  {
+    response: t.Object({
+      total: t.Number(),
+      active: t.Number()
+    })
+  }
+);
 
 app.listen(3000)
 console.log("Server running at http://localhost:3000")
