@@ -5,12 +5,20 @@ import { openapi } from "@elysiajs/openapi";
 const app = new Elysia()
 .use(openapi())
 // Global Logger
-app.onRequest(({ request }) => {
+.onRequest(({ request }) => {
  console.log("📥", request.method, request.url)
  console.log("🕒", new Date().toISOString())
 })
-
-
+.onAfterHandle(({ response, request }) => {
+    if (request.url.includes("/product")) {
+      return {
+        success: true,
+        Message: "data tersedia",
+        data: response
+      };
+    }
+  return response;
+})
 app.get("/", () => "Hello Middleware")
 app.get(
   "/stats",
@@ -44,7 +52,10 @@ app.get(
     response: t.Object({
       stats: t.Number()
     })
-  }
-);
-app.listen(3000)
+  })
+.get("/product", () => ({
+  id: 1,
+  name: "Laptop"
+}))
+.listen(3000)
 console.log("Server running at http://localhost:3000")
