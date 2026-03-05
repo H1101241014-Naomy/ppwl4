@@ -19,6 +19,16 @@ const app = new Elysia()
     }
   return response;
 })
+.onError(({ code, set }) => {
+  if (code === "VALIDATION") {
+    set.status = 400
+
+    return {
+      success: false,
+      error: "Validation Error"
+    }
+  }
+})
 app.get("/", () => "Hello Middleware")
 app.get(
   "/stats",
@@ -57,5 +67,19 @@ app.get(
   id: 1,
   name: "Laptop"
 }))
+.post(
+  "/login",
+  ({ body }) => {
+    return {
+      message: "Login success"
+    }
+  },
+  {
+    body: t.Object({
+      email: t.String(),
+      password: t.String({ minLength: 8 })
+    })
+  }
+)
 .listen(3000)
 console.log("Server running at http://localhost:3000")
